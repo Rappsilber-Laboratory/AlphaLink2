@@ -133,6 +133,7 @@ def main(args):
     seed = 0
     best_out = None
     best_iptm = 0.0
+    best_seed = None
 
     for it in range(args.times):
         cur_seed = hash((args.data_random_seed, seed)) % 100000
@@ -207,6 +208,7 @@ def main(args):
         if np.mean(out["iptm+ptm"]) > best_iptm:
             best_iptm = np.mean(out["iptm+ptm"])
             best_out = out
+            best_seed = cur_seed
 
         print("Model %d Crosslink satisfaction: %.3f Model confidence: %.3f" %(it,satisfied / total_xl, np.mean(out["iptm+ptm"])))
 
@@ -243,7 +245,7 @@ def main(args):
 
     iptm_str = np.mean(out["iptm+ptm"])
     cur_save_name = (
-        f"AlphaLink2_{cur_param_path_postfix}_{xl_seed}_{iptm_str:.3f}"
+        f"AlphaLink2_{cur_param_path_postfix}_{best_seed}_{iptm_str:.3f}"
     )
     plddts[cur_save_name] = str(mean_plddt)
     if is_multimer:
