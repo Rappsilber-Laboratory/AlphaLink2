@@ -5,7 +5,7 @@ Code for the paper ["Modelling protein complexes with crosslinking mass spectrom
 ![case](./img/figure_github.png)
 <center>
 <small>
-Figure 1. Prediction of RpoA-RpoC with real DSSO crosslinking MS data. Crosslinks are shown in blue (satisfied < 30 Å Cα-Cα) and red (violated > 30 Å Cα-Cα).
+Figure 1. Prediction of RpoA-RpoC with real DSSO crosslinking MS data. Satisfied crosslinks are shown in blue (< 30 Å Cα-Cα) and violated crosslinks in red (> 30 Å Cα-Cα).
 </small>
 </center>
 
