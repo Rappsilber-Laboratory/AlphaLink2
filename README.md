@@ -32,11 +32,11 @@ After set up, AlphaLink can be run as follows:
 
 ## Crosslink input format
 
-AlphaLink takes as input a python dictionary of dictionaries with a list of crosslinked residue pairs with a false-discovery rate (FDR). That is, for inter-protein crosslinks A->B 10,50 and 30,80 and an FDR=20%, the input would look as follows:
+AlphaLink takes as input a python dictionary of dictionaries with a list of crosslinked residue pairs with a false-discovery rate (FDR). That is, for inter-protein crosslinks A->B 0,50 and 30,80 and an FDR=20%, the input would look as follows:
 
 ```
 In [6]: crosslinks
-Out[6]: {'A': {'B': [(10, 50, 0.2), (30, 80, 0.2)]}}
+Out[6]: {'A': {'B': [(0, 50, 0.2), (30, 80, 0.2)]}}
 ```
 
 Intra-protein crosslinks would go from A -> A
