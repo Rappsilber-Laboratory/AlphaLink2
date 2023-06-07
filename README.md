@@ -32,11 +32,11 @@ After set up, AlphaLink can be run as follows:
 
 ## Crosslink input format
 
-AlphaLink takes as input a python dictionary of dictionaries with a list of crosslinked residue pairs with a false-discovery rate (FDR). That is, for inter-protein crosslinks A->B 0,50 and 30,80 and an FDR=20%, the input would look as follows:
+AlphaLink takes as input a python dictionary of dictionaries with a list of crosslinked residue pairs with a false-discovery rate (FDR). That is, for inter-protein crosslinks A->B 1,50 and 30,80 and an FDR=20%, the input would look as follows:
 
 ```
 In [6]: crosslinks
-Out[6]: {'A': {'B': [(0, 50, 0.2), (30, 80, 0.2)]}}
+Out[6]: {'A': {'B': [(1, 50, 0.2), (30, 80, 0.2)]}}
 ```
 
 Intra-protein crosslinks would go from A -> A
@@ -46,7 +46,25 @@ In [6]: crosslinks
 Out[6]: {'A': {'A': [(5, 20, 0.2)]}}
 ```
 
-The residue positions are zero-indexed, i.e., the first residue starts at 0.
+The dictionaries are 0-indexed, i.e., residues start from 0.
+
+
+You can create the dictionaries with the generate_crosslink_pickle.py script by running
+
+```
+python generate_crosslink_pickle.py --csv crosslinks.csv --output crosslinks.pkl.gz
+```
+
+The crosslinks CSV has the following format (residues are 1-indexed).
+
+residueFrom chain1 residueTo chain2 FDR
+
+Example:
+
+```
+1 A 50 B 0.2
+5 A 5 A 0.1
+```
 
 ## Citing this work
 
