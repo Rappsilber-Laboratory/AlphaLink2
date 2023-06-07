@@ -139,7 +139,6 @@ def main(args):
 
     for it in range(args.times):
         cur_seed = hash((args.data_random_seed, seed)) % 100000
-        xl_seed = cur_seed
 
         batch = load_feature_for_one_target(
             config,
@@ -226,55 +225,55 @@ def main(args):
         iptm_str = np.mean(out["iptm+ptm"])
 
         cur_save_name = (
-            f"AlphaLink2_{xl_seed}_{it}_{iptm_str:.3f}.pdb"
+            f"AlphaLink2_{cur_seed}_{iptm_str:.3f}.pdb"
         )
 
         with open(os.path.join(output_dir, cur_save_name), "w") as f:
             f.write(protein.to_pdb(cur_protein))
 
 
-        out = best_out
+    out = best_out
 
-        plddt = out["plddt"]
-        mean_plddt = np.mean(plddt)
-        plddt_b_factors = np.repeat(
-            plddt[..., None], residue_constants.atom_type_num, axis=-1
-        )
-        # TODO: , may need to reorder chains, based on entity_ids
-        cur_protein = protein.from_prediction(
-            features=batch, result=out, b_factors=plddt_b_factors
-        )
+    plddt = out["plddt"]
+    mean_plddt = np.mean(plddt)
+    plddt_b_factors = np.repeat(
+        plddt[..., None], residue_constants.atom_type_num, axis=-1
+    )
+    # TODO: , may need to reorder chains, based on entity_ids
+    cur_protein = protein.from_prediction(
+        features=batch, result=out, b_factors=plddt_b_factors
+    )
 
-        iptm_str = np.mean(out["iptm+ptm"])
-        cur_save_name = (
-            f"AlphaLink2_{cur_param_path_postfix}_{xl_seed}_{iptm_str:.3f}"
-        )
-        plddts[cur_save_name] = str(mean_plddt)
-        if is_multimer:
-            ptms[cur_save_name] = str(np.mean(out["iptm+ptm"]))
-
-
-        if args.save_raw_output:
-            with gzip.open(os.path.join(output_dir, cur_save_name + '_outputs.pkl.gz'), 'wb') as f:
-                pickle.dump(out, f)
-        del out
+    iptm_str = np.mean(out["iptm+ptm"])
+    cur_save_name = (
+        f"AlphaLink2_{cur_param_path_postfix}_{xl_seed}_{iptm_str:.3f}"
+    )
+    plddts[cur_save_name] = str(mean_plddt)
+    if is_multimer:
+        ptms[cur_save_name] = str(np.mean(out["iptm+ptm"]))
 
 
-        if args.relax:
-            amber_relaxer = relax.AmberRelaxation(
-                max_iterations=RELAX_MAX_ITERATIONS,
-                tolerance=RELAX_ENERGY_TOLERANCE,
-                stiffness=RELAX_STIFFNESS,
-                exclude_residues=RELAX_EXCLUDE_RESIDUES,
-                max_outer_iterations=RELAX_MAX_OUTER_ITERATIONS,
-                use_gpu=True)
-
-            relaxed_pdb_str, _, violations = amber_relaxer.process(
-                prot=cur_protein)
+    if args.save_raw_output:
+        with gzip.open(os.path.join(output_dir, cur_save_name + '_outputs.pkl.gz'), 'wb') as f:
+            pickle.dump(out, f)
+    del out
 
 
-            with open(os.path.join(output_dir, cur_save_name + '_best.pdb'), "w") as f:
-                f.write(relaxed_pdb_str)
+    if args.relax:
+        amber_relaxer = relax.AmberRelaxation(
+            max_iterations=RELAX_MAX_ITERATIONS,
+            tolerance=RELAX_ENERGY_TOLERANCE,
+            stiffness=RELAX_STIFFNESS,
+            exclude_residues=RELAX_EXCLUDE_RESIDUES,
+            max_outer_iterations=RELAX_MAX_OUTER_ITERATIONS,
+            use_gpu=True)
+
+        relaxed_pdb_str, _, violations = amber_relaxer.process(
+            prot=cur_protein)
+
+
+        with open(os.path.join(output_dir, cur_save_name + '_best.pdb'), "w") as f:
+            f.write(relaxed_pdb_str)
 
 
     print("plddts", plddts)
