@@ -69,7 +69,7 @@ Example:
 ## Citing this work
 
 If you use the code, the model parameters, or the released data of AlphaLink2, please cite
-
+[
 ```bibtex
 @article {AlphaLink2,
 	author = {Li, Ziyao and Liu, Xuyang and Chen, Weijie and Shen, Fan and Bi, Hangrui and Ke, Guolin and Zhang, Linfeng},
@@ -81,6 +81,7 @@ If you use the code, the model parameters, or the released data of AlphaLink2, p
 	journal = {bioRxiv}
 }
 ```
+]: #
 
 Any work that cites AlphaLink2 should also cite AlphaFold and Uni-Fold.
 
