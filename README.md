@@ -70,6 +70,21 @@ Example:
 
 If you use the code, the model parameters, or the released data of AlphaLink2, please cite
 
+    
+```bibtex
+@article {Stahl2023,
+	author = {Kolja Stahl and Oliver Brock and Juri Rappsilber},
+	title = {Modelling protein complexes with crosslinking mass spectrometry and deep learning},
+	elocation-id = {2023.06.07.544059},
+	year = {2023},
+	doi = {10.1101/2023.06.07.544059},
+	publisher = {Cold Spring Harbor Laboratory},
+	abstract = {Scarcity of structural and evolutionary information on protein complexes poses a challenge to deep learning-based structure modelling. We integrated experimental distance restraints obtained by crosslinking mass spectrometry (MS) into AlphaFold-Multimer, by extending AlphaLink to protein complexes. Integrating crosslinking MS data substantially improves modelling performance on challenging targets, by helping to identify interfaces, focusing sampling, and improving model selection. This extends to single crosslinks from whole-cell crosslinking MS, suggesting the possibility of whole-cell structural investigations driven by experimental data.Competing Interest StatementThe authors have declared no competing interest.},
+	URL = {https://www.biorxiv.org/content/early/2023/06/09/2023.06.07.544059},
+	eprint = {https://www.biorxiv.org/content/early/2023/06/09/2023.06.07.544059.full.pdf},
+	journal = {bioRxiv}
+}
+```
 
 Any work that cites AlphaLink2 should also cite AlphaFold and Uni-Fold.
 
