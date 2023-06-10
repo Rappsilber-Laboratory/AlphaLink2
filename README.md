@@ -66,6 +66,12 @@ Example:
 5 A 5 A 0.1
 ```
 
+## Model weights
+	
+The model weights are deposited here: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8007238.svg)](https://doi.org/10.5281/zenodo.8007238)
+
+
+	
 ## Citing this work
 
 If you use the code, the model parameters, or the released data of AlphaLink2, please cite
