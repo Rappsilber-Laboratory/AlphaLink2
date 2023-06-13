@@ -12,9 +12,49 @@ Figure 1. Prediction of RpoA-RpoC with real DSSO crosslinking MS data. Satisfied
 
 ## Installation and Preparations
 
-### Installing AlphaLink
+### Installing AlphaLink from scratch with conda/ pip
+In part based on: https://github.com/kalininalab/alphafold_non_docker
 
-To install AlphaLink, please follow the instructions outlined in the [Uni-Fold GitHub](https://github.com/dptech-corp/Uni-Fold#installation-and-preparations). AlphaLink uses [flash-attention](https://github.com/HazyResearch/flash-attention) to speedup predictions. Flash-attention can be installed using the instructions shown [here](https://github.com/dptech-corp/Uni-Fold/blob/flash-attn/unifold/modules/flash_attn_readme.md). AlphaLink also requires [AlphaFold](https://github.com/deepmind/alphafold) to be installed since it uses AlphaFold's relax pipeline.
+```	
+conda create --name alphalink -c conda-forge python=3.10
+conda activate alphalink
+conda install pytorch==1.13.1 pytorch-cuda=11.6 -c pytorch -c nvidia
+conda install -y -c conda-forge openmm==7.7.0 pdbfixer
+conda install -y -c bioconda hmmer hhsuite==3.3.0 kalign2
+```
+
+### Install AlphaFold - necessary for relax
+
+```
+pip install absl-py==1.0.0 biopython==1.79 chex==0.0.7 dm-haiku==0.0.9 dm-tree==0.1.6 immutabledict==2.0.0 jax==0.3.25 ml-collections==0.1.0 numpy==1.23.3 pandas protobuf==3.20.1 scipy tensorflow-cpu
+pip install --upgrade --no-cache-dir jax==0.3.25 jaxlib==0.3.25+cuda11.cudnn82 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+	
+git clone https://github.com/deepmind/alphafold.git
+
+cd alphafold
+wget -q -P alphafold/common/ https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c4941278d92b554ec94415f8/modules/mol/alg/src/stereo_chemical_props.txt
+python setup.py install
+cd ..
+```
+
+### Install flash-attention, speeds-up prediction and allows larger targets
+```
+git clone https://github.com/dptech-corp/flash-attention.git
+cd flash-attention
+CUDA_HOME=YOUR_PATH/conda/envs/alphalink python setup.py build -j 8 install
+cd ..
+```
+### Install Uni-Core
+```
+pip install https://github.com/dptech-corp/Uni-Core/releases/download/0.0.2/unicore-0.0.1+cu116torch1.13.1-cp310-cp310-linux_x86_64.whl
+```
+
+### Install AlphaLink2
+```
+git clone https://github.com/Rappsilber-Laboratory/AlphaLink2.git
+cd AlphaLink2
+python setup.py install
+```
 
 ## Running AlphaLink
 
