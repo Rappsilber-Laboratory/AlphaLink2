@@ -5,7 +5,7 @@ param_path=$4
 database_dir=$5
 max_template_date=$6
 
-echo "Starting homogeneous searching..."
+echo "Starting MSA generation..."
 python unifold/homo_search.py \
     --fasta_path=$fasta_path \
     --max_template_date=$max_template_date \
