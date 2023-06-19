@@ -16,7 +16,7 @@ Figure 1. Prediction of RpoA-RpoC with real DSSO crosslinking MS data. Satisfied
 In part based on: https://github.com/kalininalab/alphafold_non_docker
 
 ```	
-conda create --name alphalink -c conda-forge python=3.10
+conda create --name alphalink -c conda-forge python=3.9
 conda activate alphalink
 conda install pytorch==1.13.1 pytorch-cuda=11.6 -c pytorch -c nvidia
 conda install -y -c conda-forge openmm==7.7.0 pdbfixer
