@@ -37,13 +37,6 @@ python setup.py install
 cd ..
 ```
 
-### Install flash-attention, speeds-up prediction and allows larger targets
-```
-git clone https://github.com/dptech-corp/flash-attention.git
-cd flash-attention
-CUDA_HOME=YOUR_PATH/conda/envs/alphalink python setup.py build -j 8 install
-cd ..
-```
 ### Install Uni-Core
 ```
 pip install https://github.com/dptech-corp/Uni-Core/releases/download/0.0.2/unicore-0.0.1+cu116torch1.13.1-cp310-cp310-linux_x86_64.whl
