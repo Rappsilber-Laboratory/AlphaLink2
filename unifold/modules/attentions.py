@@ -11,8 +11,6 @@ from unicore.modules import (
     LayerNorm,
 )
 
-from .flash_attention import _flash_attn
-
 
 def gen_attn_mask(mask, neg_inf):
     assert neg_inf < -1e4
@@ -70,29 +68,18 @@ class Attention(nn.Module):
         k = self.linear_k(k)
         v = self.linear_v(v)
 
-        if self.use_flash_attn and self.head_dim in (16, 32, 64, 128) \
-            and q.shape == k.shape:
-            # flash update
-            q = q.view(q.shape[:-1] + (self.num_heads, -1))
-            k = k.view(k.shape[:-1] + (self.num_heads, -1))
-            v = v.view(v.shape[:-1] + (self.num_heads, -1))
-            # [bs, seq, n, no_heads, c]
-            o = _flash_attn(q, k, v, mask=mask, bias=bias, 
-                q_cu_seqlens=q_cu_seqlens, k_cu_seqlens=k_cu_seqlens)
+        q = q.view(q.shape[:-1] + (self.num_heads, -1)).transpose(-2, -3).contiguous()
+        k = k.view(k.shape[:-1] + (self.num_heads, -1)).transpose(-2, -3).contiguous()
+        v = v.view(v.shape[:-1] + (self.num_heads, -1)).transpose(-2, -3)
 
-        else:
-            q = q.view(q.shape[:-1] + (self.num_heads, -1)).transpose(-2, -3).contiguous()
-            k = k.view(k.shape[:-1] + (self.num_heads, -1)).transpose(-2, -3).contiguous()
-            v = v.view(v.shape[:-1] + (self.num_heads, -1)).transpose(-2, -3)
+        attn = torch.matmul(q, k.transpose(-1, -2))
+        del q, k
 
-            attn = torch.matmul(q, k.transpose(-1, -2))
-            del q, k
+        attn = softmax_dropout(attn, 0, self.training, mask=mask, bias=bias)
+        o = torch.matmul(attn, v)
+        del attn, v
 
-            attn = softmax_dropout(attn, 0, self.training, mask=mask, bias=bias)
-            o = torch.matmul(attn, v)
-            del attn, v
-
-            o = o.transpose(-2, -3).contiguous()
+        o = o.transpose(-2, -3).contiguous()
 
         o = o.view(*o.shape[:-2], -1)
 
