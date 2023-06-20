@@ -99,9 +99,9 @@ def load_single_feature(
                 all_seq_feature["deletion_matrix"],
             )
         else:
-            all_seq_feature["deletion_matrix"] = np.asarray(
-                all_seq_feature.pop("deletion_matrix_int"), dtype=np.float32
-            )
+            # all_seq_feature["deletion_matrix"] = np.asarray(
+            #     all_seq_feature.pop("deletion_matrix_int"), dtype=np.float32
+            # )
             all_seq_feature = utils.convert_all_seq_feature(all_seq_feature)
             for key in [
                 "msa_all_seq",
