@@ -201,7 +201,7 @@ def main(args):
         
         interface = torch.from_numpy(batch['asym_id'][..., None] != batch['asym_id'][..., None, :])
 
-        satisfied = torch.sum(distances[xl & interface] <= 25) / 2
+        satisfied = torch.sum(distances[xl & interface] <= args.cutoff) / 2
 
         total_xl = torch.sum(xl & interface) / 2
 
@@ -231,6 +231,12 @@ def main(args):
             f.write(protein.to_pdb(cur_protein))
 
 
+        if args.save_raw_output:
+            with gzip.open(os.path.join(output_dir, cur_save_name + '_outputs.pkl.gz'), 'wb') as f:
+                pickle.dump(out, f)
+        # del out
+
+
     out = best_out
 
     plddt = out["plddt"]
@@ -250,13 +256,6 @@ def main(args):
     plddts[cur_save_name] = str(mean_plddt)
     if is_multimer:
         ptms[cur_save_name] = str(np.mean(out["iptm+ptm"]))
-
-
-    if args.save_raw_output:
-        with gzip.open(os.path.join(output_dir, cur_save_name + '_outputs.pkl.gz'), 'wb') as f:
-            pickle.dump(out, f)
-    del out
-
 
     if args.relax:
         amber_relaxer = relax.AmberRelaxation(
@@ -341,6 +340,11 @@ if __name__ == "__main__":
         "--num_ensembles",
         type=int,
         default=1,
+    )
+    parser.add_argument(
+        "--cutoff",
+        type=float,
+        default=25,
     )
     parser.add_argument("--sample_templates", action="store_true")
     parser.add_argument("--use_uniprot", action="store_true")
