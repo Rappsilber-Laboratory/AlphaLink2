@@ -16,7 +16,7 @@ python unifold/homo_search.py \
     --uniclust30_database_path=$database_dir/uniclust30/uniclust30_2018_08/uniclust30_2018_08 \
     --uniprot_database_path=$database_dir/uniprot/uniprot.fasta \
     --pdb_seqres_database_path=$database_dir/pdb_seqres/pdb_seqres.txt \
-    --template_mmcif_dir=$database_dir/pdb_mmcif/mmcif_files \   
+    --template_mmcif_dir=$database_dir/pdb_mmcif/mmcif_files \
     --obsolete_pdbs_path=$database_dir/pdb_mmcif/obsolete.dat \
     --use_precomputed_msas=True
 
