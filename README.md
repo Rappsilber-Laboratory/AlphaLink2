@@ -19,6 +19,7 @@ In part based on: https://github.com/kalininalab/alphafold_non_docker
 ```	
 conda create --name alphalink -c conda-forge python=3.9
 conda activate alphalink
+conda install pip
 ```
 
 ### Install Uni-Core
