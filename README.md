@@ -15,10 +15,20 @@ Figure 1. Prediction of RpoA-RpoC with real DSSO crosslinking MS data. Satisfied
 ### Installing AlphaLink from scratch with conda/ pip
 In part based on: https://github.com/kalininalab/alphafold_non_docker
 
+### Create new conda environment
 ```	
 conda create --name alphalink -c conda-forge python=3.9
 conda activate alphalink
-conda install pytorch==1.13.1 pytorch-cuda=11.6 -c pytorch -c nvidia
+```
+
+### Install Uni-Core
+```
+pip install https://github.com/dptech-corp/Uni-Core/releases/download/0.0.2/unicore-0.0.1+cu116torch1.13.1-cp39-cp39-linux_x86_64.whl
+```
+
+### Install PyTorch and utilities
+```
+conda install pytorch==1.13.1 pytorch-cuda=11.7 -c pytorch -c nvidia
 conda install -y -c conda-forge openmm==7.7.0 pdbfixer
 conda install -y -c bioconda hmmer hhsuite==3.3.0 kalign2
 ```
@@ -37,10 +47,6 @@ python setup.py install
 cd ..
 ```
 
-### Install Uni-Core
-```
-pip install https://github.com/dptech-corp/Uni-Core/releases/download/0.0.2/unicore-0.0.1+cu116torch1.13.1-cp39-cp39-linux_x86_64.whl
-```
 
 ### Install AlphaLink2
 ```
