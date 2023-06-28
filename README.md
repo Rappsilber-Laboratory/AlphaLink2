@@ -1,6 +1,6 @@
 # AlphaLink2: Modelling protein complexes with crosslinking mass spectrometry and deep learning
 
-Code for the paper ["Modelling protein complexes with crosslinking mass spectrometry and deep learning"](https://www.biorxiv.org/content/early/2023/06/09/2023.06.07.544059). We extend [AlphaLink](https://github.com/lhatsk/AlphaLink) to protein complexes. AlphaLink2 is based on [Uni-Fold](https://github.com/dptech-corp/Uni-Fold) and integrates crosslinking MS data directly into Uni-Fold. The current [networks](https://doi.org/10.5281/zenodo.8007238) were trained with simulated SDA data (25 Å Cα-Cα).
+Code for the paper ["Modelling protein complexes with crosslinking mass spectrometry and deep learning"](https://www.biorxiv.org/content/10.1101/2023.06.07.544059v2). We extend [AlphaLink](https://github.com/lhatsk/AlphaLink) to protein complexes. AlphaLink2 is based on [Uni-Fold](https://github.com/dptech-corp/Uni-Fold) and integrates crosslinking MS data directly into Uni-Fold. The current [networks](https://doi.org/10.5281/zenodo.8007238) were trained with simulated SDA data (25 Å Cα-Cα).
 
 ![case](./img/figure_github.png)
 <center>
