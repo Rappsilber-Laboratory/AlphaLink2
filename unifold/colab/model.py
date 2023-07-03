@@ -33,12 +33,8 @@ def colab_inference(
     device: str = "cuda:0",
 ):
 
-    if is_multimer:
-        model_name = "multimer_ft"
-        param_path = os.path.join(param_dir, "multimer.unifold.pt")
-    else:
-        model_name = "model_2_ft"
-        param_path = os.path.join(param_dir, "monomer.unifold.pt")
+    model_name = "multimer_af2_crop"
+    param_path = os.path.join(param_dir, "alphalink_weights.pt")
 
     config = model_config(model_name)
         
@@ -84,6 +80,8 @@ def colab_inference(
                                 )
         model.globals.chunk_size = chunk_size
         model.globals.block_size = block_size
+
+        print("using %d crosslink(s)" %(torch.sum((batch['xl'] > 0) / 2)))
 
         with torch.no_grad():
             batch = {

@@ -36,7 +36,7 @@ def load_crosslinks(fname):
   return crosslinks
 
 
-def load_fasta(fname):
+def load_fasta(fname,jobname):
   def add_hash(x,y):
       return x+"_"+hashlib.sha1(y.encode()).hexdigest()[:5]
 
@@ -142,31 +142,18 @@ def load_feature_for_one_target(
         uniprot_msa_dir = data_folder
         sequence_ids = open(os.path.join(data_folder, "chains.txt")).readline().split()
     
-    if symmetry_group is None:
-        batch, _ = load_and_process(
-            config=config.data,
-            mode="predict",
-            seed=seed,
-            batch_idx=None,
-            data_idx=0,
-            is_distillation=False,
-            sequence_ids=sequence_ids,
-            monomer_feature_dir=data_folder,
-            uniprot_msa_dir=uniprot_msa_dir,
-        )
-    
-    else:
-        batch, _ = load_and_process_symmetry(
-            config=config.data,
-            mode="predict",
-            seed=seed,
-            batch_idx=None,
-            data_idx=0,
-            is_distillation=False,
-            symmetry=symmetry_group,
-            sequence_ids=sequence_ids,
-            monomer_feature_dir=data_folder,
-            uniprot_msa_dir=uniprot_msa_dir,
-        )
+    batch, _ = load_and_process(
+        config=config.data,
+        mode="predict",
+        seed=seed,
+        batch_idx=None,
+        data_idx=0,
+        is_distillation=False,
+        crosslinks='crosslinks.pkl.gz',
+        sequence_ids=sequence_ids,
+        monomer_feature_dir=data_folder,
+        uniprot_msa_dir=uniprot_msa_dir,
+    )
+
     batch = UnifoldDataset.collater([batch])
     return batch
