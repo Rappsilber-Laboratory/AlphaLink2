@@ -12,11 +12,6 @@ from unifold.config import model_config
 from unifold.modules.alphafold import AlphaFold
 from unifold.data import protein, residue_constants
 from unifold.colab.data import load_feature_for_one_target
-from unifold.symmetry import (
-    UFSymmetry,
-    uf_symmetry_config,
-    assembly_from_prediction,
-)
 from unifold.inference import automatic_chunk_size
 
 
@@ -122,7 +117,7 @@ def colab_inference(
             f"{cur_param_path_postfix}_{cur_seed}"
         )
         plddts[cur_save_name] = str(mean_plddt)
-        if is_multimer and symmetry_group is None:
+        if is_multimer:
             ptms[cur_save_name] = str(np.mean(out["iptm+ptm"]))
         with open(os.path.join(output_dir, cur_save_name + '.pdb'), "w") as f:
             f.write(protein.to_pdb(cur_protein))
