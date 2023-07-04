@@ -128,7 +128,10 @@ def colab_inference(
                 best_result = {
                     "protein": cur_protein,
                     "plddt": out["plddt"],
-                    "pae": out["predicted_aligned_error"]
+                    "pae": out["predicted_aligned_error"],
+                    "ptm": out["ptm"],
+                    "iptm": out["iptm"],
+                    "model_confidence": mean_ptm
                 }
         else:
             if mean_plddt>best_score:
@@ -146,5 +149,8 @@ def colab_inference(
         print("ptms", ptms)
         ptm_fname = score_name + "_ptm.json"
         json.dump(ptms, open(os.path.join(output_dir, ptm_fname), "w"), indent=4)
+
+    xl = batch['xl'][...,0] > 0
+    best_result['xl'] = np.nonzero(xl)
     
     return best_result

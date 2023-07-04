@@ -32,7 +32,7 @@ def colab_plot(
         multichain_style = {'cartoon': {'colorscheme': 'chain'}}
         multichain_view.setStyle({'model': -1}, multichain_style)
         multichain_view.zoomTo()
-        multichain_view.show()
+        #multichain_view.show()
 
     # Color the structure by per-residue pLDDT
     view = py3Dmol.view(width=800, height=600)
@@ -43,55 +43,24 @@ def colab_plot(
     view.setStyle({'model':-1}, style)
     view.zoomTo()
 
-    grid = GridspecLayout(1, 2)
+    grid = GridspecLayout(1, 3)
     out = Output()
     with out:
-        view.show()
+        multichain_view.show()
     grid[0, 0] = out
 
     out = Output()
     with out:
-        plot_plddt_legend().show()
+        view.show()
     grid[0, 1] = out
 
+
+    out = Output()
+    with out:
+        plot_plddt_legend().show()
+    grid[0, 2] = out
+
     display.display(grid)
-
-    # Display pLDDT and predicted aligned error (if output by the model).
-    num_plots = 1 if best_pae is None else 2
-
-    plt.figure(figsize=[8 * num_plots , 6])
-    plt.subplot(1, num_plots, 1)
-    plt.plot(best_plddt * 100)
-    plt.title('Predicted LDDT')
-    plt.xlabel('Residue')
-    plt.ylabel('pLDDT')
-    plt.grid()
-    plddt_svg_path = os.path.join(output_dir, 'plddt.svg')
-    plt.savefig(plddt_svg_path, dpi=dpi, bbox_inches='tight')
-
-    if best_pae is not None:
-        plt.subplot(1, 2, 2)
-        max_pae = np.max(best_pae)
-        colors = ['#0F006F','#245AE6','#55CCFF','#FFFFFF']
-
-        cmap = LinearSegmentedColormap.from_list('mymap', colors)
-        im = plt.imshow(best_pae, vmin=0., vmax=max_pae, cmap=cmap)
-        plt.colorbar(im, fraction=0.046, pad=0.04)
-
-        # Display lines at chain boundaries.
-        total_num_res = best_protein.residue_index.shape[-1]
-        chain_ids = best_protein.chain_index
-        for chain_boundary in np.nonzero(chain_ids[:-1] - chain_ids[1:]):
-            if chain_boundary.size:
-                plt.plot([0, total_num_res], [chain_boundary, chain_boundary], color='red')
-                plt.plot([chain_boundary, chain_boundary], [0, total_num_res], color='red')
-
-        plt.title('Predicted Aligned Error')
-        plt.xlabel('Scored residue')
-        plt.ylabel('Aligned residue')
-        pae_svg_path = os.path.join(output_dir, 'pae.svg')
-        plt.savefig(pae_svg_path, dpi=dpi, bbox_inches='tight')
-
 
 PLDDT_BANDS = [(0., 0.50, '#FF7D45'),
             (0.50, 0.70, '#FFDB13'),
@@ -121,3 +90,72 @@ def plot_plddt_legend():
     ax.spines['bottom'].set_visible(False)
     plt.title('Model Confidence', fontsize=20, pad=20)
     return plt
+
+
+def colab_plot_confidence(
+    best_result: Mapping[str, Any],
+    output_dir: str,
+    show_sidechains: bool = False,
+    dpi: int = 100,
+):
+    best_protein = best_result["protein"]
+    best_plddt = best_result["plddt"]
+    best_pae = best_result.get("pae", None)
+
+    if "iptm" in best_result:
+        print("Summary:\nModel confidence: %.3f\npTM: %.3f\nipTM: %.3f" %(best_result["model_confidence"],best_result["ptm"],best_result["iptm"]))
+    
+    to_visualize_pdb = protein.to_pdb(best_protein)
+
+    # Display pLDDT and predicted aligned error (if output by the model).
+    num_plots = 1 if best_pae is None else 2
+
+    plt.figure(figsize=[8 * num_plots , 6])
+    plt.subplot(1, num_plots, 1)
+    plt.plot(best_plddt * 100)
+    plt.title('Predicted LDDT')
+    plt.xlabel('Residue')
+    plt.ylabel('pLDDT')
+    plt.grid()
+    plddt_svg_path = os.path.join(output_dir, 'plddt.svg')
+    plt.savefig(plddt_svg_path, dpi=dpi, bbox_inches='tight')
+
+    chain_ids = best_protein.chain_index
+    for chain_boundary in np.nonzero(chain_ids[:-1] - chain_ids[1:]):
+        if chain_boundary.size:
+            plt.vlines(chain_boundary+1,0,100,color='red')
+
+    if best_pae is not None:
+        plt.subplot(1, 2, 2)
+        max_pae = np.max(best_pae)
+        #colors = ['#0F006F','#245AE6','#55CCFF','#FFFFFF']
+
+        #cmap = LinearSegmentedColormap.from_list('mymap', colors)
+        im = plt.imshow(best_pae, vmin=0., vmax=max_pae, cmap='gray')
+        plt.colorbar(im, fraction=0.046, pad=0.04)
+
+        # Display lines at chain boundaries.
+        total_num_res = best_protein.residue_index.shape[-1]
+        chain_ids = best_protein.chain_index
+        for chain_boundary in np.nonzero(chain_ids[:-1] - chain_ids[1:]):
+            if chain_boundary.size:
+                plt.plot([0, total_num_res], [chain_boundary, chain_boundary], color='red')
+                plt.plot([chain_boundary, chain_boundary], [0, total_num_res], color='red')
+
+        for i,j in best_result['xl']:
+            plt.scatter(i,j,s=20,color='red')
+            plt.scatter(j,i,s=20,color='red')
+
+        r = plt.Line2D((0,0), (0,0), linestyle='none', marker='o', markerfacecolor="red", markeredgecolor="black",alpha=1.00,markersize=8,label='Unsatisfied crosslink')
+        b = plt.Line2D((0,0), (0,0), linestyle='none', marker='o', markerfacecolor="blue", markeredgecolor="black",alpha=1.00,markersize=8,label='Satisfied crosslink')
+
+        plt.legend(handles=[b,r],ncol=2,loc='upper center', bbox_to_anchor=(0.5, -0.1))
+
+        plt.ylim(total_num_res-1,0)
+        plt.xlim(0,total_num_res-1)
+
+        plt.title('Predicted Aligned Error')
+        plt.xlabel('Scored residue')
+        plt.ylabel('Aligned residue')
+        pae_svg_path = os.path.join(output_dir, 'pae.svg')
+        plt.savefig(pae_svg_path, dpi=dpi, bbox_inches='tight')
