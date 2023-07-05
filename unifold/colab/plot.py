@@ -5,6 +5,7 @@ import os
 import numpy as np
 import py3Dmol
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 from matplotlib.colors import LinearSegmentedColormap
 from IPython import display
 from ipywidgets import GridspecLayout
@@ -170,8 +171,10 @@ def colab_plot_confidence(
         for i,j,distance in best_result['xl']:
             if distance <= cutoff:
                 plt.scatter(i,j,s=20,color='blue')
+                plt.scatter(j,i,s=20,color='blue')
             else:
                 plt.scatter(j,i,s=20,color='red')
+               	plt.scatter(i,j,s=20,color='red')
 
         r = plt.Line2D((0,0), (0,0), linestyle='none', marker='o', markerfacecolor="red", markeredgecolor="black",alpha=1.00,markersize=8,label='Unsatisfied crosslink')
         b = plt.Line2D((0,0), (0,0), linestyle='none', marker='o', markerfacecolor="blue", markeredgecolor="black",alpha=1.00,markersize=8,label='Satisfied crosslink')
@@ -186,3 +189,22 @@ def colab_plot_confidence(
         plt.ylabel('Aligned residue')
         pae_svg_path = os.path.join(output_dir, 'pae.svg')
         plt.savefig(pae_svg_path, dpi=dpi, bbox_inches='tight')
+
+
+def plot_distance_distribution(
+    best_result: Mapping[str, Any],
+    output_dir: str,
+    dpi: int = 100,
+):
+    ax = plt.figure().gca()
+    dist = [d for _,_,d in best_result['xl']]
+    plt.hist(dist,rwidth=0.7);
+    plt.title('Crosslink distance distribution (CA-CA)')
+    plt.xlim(0,np.max(dist)+10)
+    # plt.xticks(np.arange(0, np.max(dist)+1, 2.0))
+    plt.xlabel('CA-CA Distance [Å]')
+    plt.ylabel('Count')
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
+    dist_svg_path = os.path.join(output_dir, 'distance_distribution.svg')
+    plt.savefig(dist_svg_path, dpi=dpi, bbox_inches='tight')

@@ -160,6 +160,7 @@ def colab_inference(
     distances = get_pairwise_distances(ca_coords)
 
     xl = batch['xl'][...,0] > 0
-    best_result['xl'] = [(i,j,distances[i,j].item()) for i,j in np.nonzero(xl) ]
+
+    best_result['xl'] = [(i.item(),j.item(),distances[i,j].item()) for i,j in torch.nonzero(torch.from_numpy(xl)) if i < j ]
     
     return best_result
