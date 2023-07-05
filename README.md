@@ -17,19 +17,18 @@ In part based on: https://github.com/kalininalab/alphafold_non_docker
 
 ### Create new conda environment
 ```	
-conda create --name alphalink -c conda-forge python=3.9
+conda create --name alphalink -c conda-forge python=3.10
 conda activate alphalink
-conda install pip
 ```
 
 ### Install Uni-Core
 ```
-pip install https://github.com/dptech-corp/Uni-Core/releases/download/0.0.1/unicore-0.0.1+cu116torch1.12.1-cp39-cp39-linux_x86_64.whl
+pip install nvidia-pyindex
+pip install https://github.com/dptech-corp/Uni-Core/releases/download/0.0.3/unicore-0.0.1+cu118torch2.0.0-cp310-cp310-linux_x86_64.whl
 ```
 
-### Install PyTorch and utilities
+### Install utilities
 ```
-conda install pytorch==1.13.1 pytorch-cuda=11.7 -c pytorch -c nvidia
 conda install -y -c conda-forge openmm==7.7.0 pdbfixer
 conda install -y -c bioconda hmmer hhsuite==3.3.0 kalign2
 ```
@@ -37,9 +36,7 @@ conda install -y -c bioconda hmmer hhsuite==3.3.0 kalign2
 ### Install AlphaFold - necessary for relax
 
 ```
-pip install absl-py==1.0.0 biopython==1.79 chex==0.0.7 dm-haiku==0.0.9 dm-tree==0.1.6 immutabledict==2.0.0 jax==0.3.25 ml-collections==0.1.0 numpy==1.23.3 pandas protobuf==3.20.1 scipy tensorflow-cpu
-pip install --upgrade --no-cache-dir jax==0.3.25 jaxlib==0.3.25+cuda11.cudnn82 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
-	
+pip install urllib3==1.26.16
 git clone https://github.com/deepmind/alphafold.git
 
 cd alphafold
