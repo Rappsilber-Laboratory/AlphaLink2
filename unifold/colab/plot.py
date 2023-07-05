@@ -22,6 +22,7 @@ def calc_residue_dist(residue_one, residue_two) :
 def colab_plot(
     best_result: Mapping[str, Any],
     output_dir: str,
+    crosslinks,
     show_sidechains: bool = False,
     dpi: int = 100,
     cutoff: float = 25,
@@ -123,11 +124,11 @@ def colab_plot_confidence(
     satisfaction = 0
     mean_distance = 0
     if len(best_result['xl']) > 0:
-        satisfaction = np.sum([d <= crosslink_distance_cutoff for _,_,d in best_result['xl']]) / len(best_result['xl'])
+        satisfaction = np.sum([d <= cutoff for _,_,d in best_result['xl']]) / len(best_result['xl'])
         mean_distance = np.mean([d for _,_,d in best_result['xl']])
 
     if "iptm" in best_result:
-        print("Summary:\nModel confidence: %.3f\npTM: %.3f\nipTM: %.3f\nCrosslink satisfaction: %.3f\nMean distance of crosslinked residues: %.3f" %(best_result["model_confidence"],best_result["ptm"],best_result["iptm"]),satisfaction,mean_distance)
+        print("Summary:\nModel confidence: %.3f\npTM: %.3f\nipTM: %.3f\nCrosslink satisfaction: %.3f\nMean distance of crosslinked residues: %.3f" %(best_result["model_confidence"],best_result["ptm"],best_result["iptm"],satisfaction,mean_distance))
     
     to_visualize_pdb = protein.to_pdb(best_protein)
 
