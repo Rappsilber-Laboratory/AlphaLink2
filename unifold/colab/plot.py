@@ -12,12 +12,19 @@ from ipywidgets import Output
 from typing import *
 from unifold.data import protein
 
+import Bio.PDB
+from io import StringIO
+
+def calc_residue_dist(residue_one, residue_two) :
+    diff_vector = residue_one["CA"].coord - residue_two["CA"].coord
+    return np.sqrt(np.sum(diff_vector * diff_vector))
 
 def colab_plot(
     best_result: Mapping[str, Any],
     output_dir: str,
     show_sidechains: bool = False,
     dpi: int = 100,
+    cutoff: float = 25,
 ):
     best_protein = best_result["protein"]
     best_plddt = best_result["plddt"]
@@ -25,14 +32,24 @@ def colab_plot(
     
     to_visualize_pdb = protein.to_pdb(best_protein)
 
+    structure = Bio.PDB.PDBParser().get_structure('X', StringIO(to_visualize_pdb))[0]
+
     # --- Visualise the prediction & confidence ---
-    if best_pae is not None:
-        multichain_view = py3Dmol.view(width=800, height=600)
-        multichain_view.addModelsAsFrames(to_visualize_pdb)
-        multichain_style = {'cartoon': {'colorscheme': 'chain'}}
-        multichain_view.setStyle({'model': -1}, multichain_style)
-        multichain_view.zoomTo()
-        #multichain_view.show()
+    multichain_view = py3Dmol.view(width=800, height=600)
+    multichain_view.addModelsAsFrames(to_visualize_pdb)
+    multichain_style = {'cartoon': {'colorscheme': 'chain'}}
+    multichain_view.setStyle({'model': -1}, multichain_style)
+    for c1,v1 in crosslinks.items():
+        for c2,v2 in v1.items():
+            for i,j,_ in v2:
+                i += 1
+                j += 1
+                if calc_residue_dist(structure[c1][i],structure[c2][j]) <= cutoff:
+                    multichain_view.addCylinder({"start":{"resi":[i], "chain": c1},"end":{"resi":[j], "chain": c2},"color":"blue","radius":0.3});
+                else:
+                    multichain_view.addCylinder({"start":{"resi":[i], "chain": c1},"end":{"resi":[j], "chain": c2},"color":"red","radius":0.3});
+
+    multichain_view.zoomTo()
 
     # Color the structure by per-residue pLDDT
     view = py3Dmol.view(width=800, height=600)
@@ -97,13 +114,20 @@ def colab_plot_confidence(
     output_dir: str,
     show_sidechains: bool = False,
     dpi: int = 100,
+    cutoff: float = 25,
 ):
     best_protein = best_result["protein"]
     best_plddt = best_result["plddt"]
     best_pae = best_result.get("pae", None)
 
+    satisfaction = 0
+    mean_distance = 0
+    if len(best_result['xl']) > 0:
+        satisfaction = np.sum([d <= crosslink_distance_cutoff for _,_,d in best_result['xl']]) / len(best_result['xl'])
+        mean_distance = np.mean([d for _,_,d in best_result['xl']])
+
     if "iptm" in best_result:
-        print("Summary:\nModel confidence: %.3f\npTM: %.3f\nipTM: %.3f" %(best_result["model_confidence"],best_result["ptm"],best_result["iptm"]))
+        print("Summary:\nModel confidence: %.3f\npTM: %.3f\nipTM: %.3f\nCrosslink satisfaction: %.3f\nMean distance of crosslinked residues: %.3f" %(best_result["model_confidence"],best_result["ptm"],best_result["iptm"]),satisfaction,mean_distance)
     
     to_visualize_pdb = protein.to_pdb(best_protein)
 
@@ -142,9 +166,11 @@ def colab_plot_confidence(
                 plt.plot([0, total_num_res], [chain_boundary, chain_boundary], color='red')
                 plt.plot([chain_boundary, chain_boundary], [0, total_num_res], color='red')
 
-        for i,j in best_result['xl']:
-            plt.scatter(i,j,s=20,color='red')
-            plt.scatter(j,i,s=20,color='red')
+        for i,j,distance in best_result['xl']:
+            if distance <= cutoff:
+                plt.scatter(i,j,s=20,color='blue')
+            else:
+                plt.scatter(j,i,s=20,color='red')
 
         r = plt.Line2D((0,0), (0,0), linestyle='none', marker='o', markerfacecolor="red", markeredgecolor="black",alpha=1.00,markersize=8,label='Unsatisfied crosslink')
         b = plt.Line2D((0,0), (0,0), linestyle='none', marker='o', markerfacecolor="blue", markeredgecolor="black",alpha=1.00,markersize=8,label='Satisfied crosslink')

@@ -14,6 +14,8 @@ from unifold.data import protein, residue_constants
 from unifold.colab.data import load_feature_for_one_target
 from unifold.inference import automatic_chunk_size
 
+from unifold.data.data_ops import get_pairwise_distances
+from unifold.data import residue_constants as rc
 
 def colab_inference(
     target_id: str,
@@ -150,7 +152,14 @@ def colab_inference(
         ptm_fname = score_name + "_ptm.json"
         json.dump(ptms, open(os.path.join(output_dir, ptm_fname), "w"), indent=4)
 
+
+
+    ca_idx = rc.atom_order["CA"]
+    ca_coords = torch.from_numpy(out["final_atom_positions"][..., ca_idx, :])
+
+    distances = get_pairwise_distances(ca_coords)
+
     xl = batch['xl'][...,0] > 0
-    best_result['xl'] = np.nonzero(xl)
+    best_result['xl'] = [(i,j,distances[i,j].item()) for i,j in np.nonzero(xl) ]
     
     return best_result
