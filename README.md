@@ -49,7 +49,7 @@ Example:
 5 A 5 A 0.1
 ```
 
-## Installation and Preparations
+## Installation and preparations
 
 ### Installing AlphaLink from scratch with conda/ pip
 In part based on: https://github.com/kalininalab/alphafold_non_docker
