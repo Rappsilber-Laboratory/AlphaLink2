@@ -41,7 +41,7 @@ conda install -y -c bioconda hmmer hhsuite==3.3.0 kalign2
 ### Install AlphaFold - necessary for relax
 
 ```
-pip install urllib3==1.26.16
+pip install urllib3==1.26.16 tensorflow-cpu==2.13.0rc2
 git clone https://github.com/deepmind/alphafold.git
 
 cd alphafold
