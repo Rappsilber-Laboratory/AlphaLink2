@@ -9,6 +9,45 @@ Figure 1. Prediction of RpoA-RpoC with real DSSO crosslinking MS data. Satisfied
 </small>
 </center>
 
+## Running AlphaLink in ColabFold
+
+The AlphaLink2 ColabFold can be found [here](https://colab.research.google.com/github/Rappsilber-Laboratory/AlphaLink2/blob/main/notebooks/alphalink2.ipynb).
+
+## Crosslink input format
+
+AlphaLink takes as input a python dictionary of dictionaries with a list of crosslinked residue pairs with a false-discovery rate (FDR). That is, for inter-protein crosslinks A->B 1,50 and 30,80 and an FDR=20%, the input would look as follows:
+
+```
+In [6]: crosslinks
+Out[6]: {'A': {'B': [(1, 50, 0.2), (30, 80, 0.2)]}}
+```
+
+Intra-protein crosslinks would go from A -> A
+
+```
+In [6]: crosslinks
+Out[6]: {'A': {'A': [(5, 20, 0.2)]}}
+```
+
+The dictionaries are 0-indexed, i.e., residues start from 0.
+
+
+You can create the dictionaries with the generate_crosslink_pickle.py script by running
+
+```
+python generate_crosslink_pickle.py --csv crosslinks.csv --output crosslinks.pkl.gz
+```
+
+The crosslinks CSV has the following format (residues are 1-indexed).
+
+residueFrom chain1 residueTo chain2 FDR
+
+Example:
+
+```
+1 A 50 B 0.2
+5 A 5 A 0.1
+```
 
 ## Installation and Preparations
 
@@ -58,6 +97,10 @@ cd AlphaLink2
 python setup.py install
 ```
 
+## Model weights
+	
+The model weights are deposited here: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8007238.svg)](https://doi.org/10.5281/zenodo.8007238)
+
 ## Running AlphaLink
 
 After set up, AlphaLink can be run as follows:
@@ -71,52 +114,6 @@ After set up, AlphaLink can be run as follows:
     /path/to/database/directory/ \    # directory of databases
     2020-05-01                        # use templates before this date
 ```
-
-## Running AlphaLink in ColabFold
-
-The AlphaLink2 ColabFold can be found [here](https://colab.research.google.com/github/Rappsilber-Laboratory/AlphaLink2/blob/main/notebooks/alphalink2.ipynb).
-
-## Crosslink input format
-
-AlphaLink takes as input a python dictionary of dictionaries with a list of crosslinked residue pairs with a false-discovery rate (FDR). That is, for inter-protein crosslinks A->B 1,50 and 30,80 and an FDR=20%, the input would look as follows:
-
-```
-In [6]: crosslinks
-Out[6]: {'A': {'B': [(1, 50, 0.2), (30, 80, 0.2)]}}
-```
-
-Intra-protein crosslinks would go from A -> A
-
-```
-In [6]: crosslinks
-Out[6]: {'A': {'A': [(5, 20, 0.2)]}}
-```
-
-The dictionaries are 0-indexed, i.e., residues start from 0.
-
-
-You can create the dictionaries with the generate_crosslink_pickle.py script by running
-
-```
-python generate_crosslink_pickle.py --csv crosslinks.csv --output crosslinks.pkl.gz
-```
-
-The crosslinks CSV has the following format (residues are 1-indexed).
-
-residueFrom chain1 residueTo chain2 FDR
-
-Example:
-
-```
-1 A 50 B 0.2
-5 A 5 A 0.1
-```
-
-## Model weights
-	
-The model weights are deposited here: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8007238.svg)](https://doi.org/10.5281/zenodo.8007238)
-
-
 	
 ## Citing this work
 
