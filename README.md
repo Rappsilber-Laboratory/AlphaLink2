@@ -22,10 +22,15 @@ conda activate alphalink
 ```
 
 ### Install Uni-Core
+
+For Linux:
 ```
 pip install nvidia-pyindex
 pip install https://github.com/dptech-corp/Uni-Core/releases/download/0.0.3/unicore-0.0.1+cu118torch2.0.0-cp310-cp310-linux_x86_64.whl
 ```
+
+For other systems, build [Uni-Core from scratch.](https://github.com/dptech-corp/Uni-Core#installation)
+
 
 ### Install utilities
 ```
@@ -66,6 +71,10 @@ After set up, AlphaLink can be run as follows:
     /path/to/database/directory/ \    # directory of databases
     2020-05-01                        # use templates before this date
 ```
+
+## Running AlphaLink in ColabFold
+
+The AlphaLink2 ColabFold can be found [here](https://colab.research.google.com/github/Rappsilber-Laboratory/AlphaLink2/blob/main/notebooks/alphalink2.ipynb).
 
 ## Crosslink input format
 
