@@ -151,8 +151,6 @@ def prepare_crosslinks(tp, chain_ids, offsets, lengths):
             for ii, jj,fdr in tp[chain1][chain2]:
                 ii += offsets[i]
                 jj += offsets[j]
-                if chain1 == chain2 and abs(ii - jj) < 6:
-                    continue
                 links.append((ii,jj,fdr))
 
             if len(links) == 0:
