@@ -146,12 +146,6 @@ def prepare_crosslinks(tp, chain_ids, offsets, lengths):
             if chain2 not in tp[chain1]:
                 continue
 
-            if (chain1,chain2) in seen:
-                continue
-
-            seen.add((chain1,chain2))
-            seen.add((chain2,chain1))
-
             links = []
 
             for ii, jj,fdr in tp[chain1][chain2]:
