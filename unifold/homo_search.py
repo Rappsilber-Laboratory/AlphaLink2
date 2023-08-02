@@ -160,7 +160,7 @@ def generate_pkl_features(
     """
     logging.info(f"searching homogeneous Sequences & structures for {fasta_name}...")
     timings = {}
-    output_dir = os.path.join(output_dir_base, fasta_name.split("_")[0])
+    output_dir = os.path.join(output_dir_base, "_".join(fasta_name.split("_")[:-1]))
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     chain_id = fasta_name.split("_")[-1] if len(fasta_name.split("_")) > 1 else "A"
@@ -278,7 +278,7 @@ def main(argv):
         chain_order_path = os.path.join(output_dir, "chains.txt")
         with open(chain_order_path, "w") as f:
             f.write("A")
-        fasta_names = [fasta_name]
+        fasta_names = [fasta_name+"_A"]
         fasta_paths = [fasta_path]
 
     # Check for duplicate FASTA file names.
