@@ -32,4 +32,5 @@ python inference.py \
     --crosslinks=$crosslinks \
 	--bf16 \
 	--use_uniprot \
+        --save_raw_output \
 	--relax
