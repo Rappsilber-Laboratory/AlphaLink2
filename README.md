@@ -56,6 +56,8 @@ The chain IDs A..Z+ designate all unique chains (based on sequence identity) in 
 ### Installing AlphaLink from scratch with conda/ pip
 In part based on: https://github.com/kalininalab/alphafold_non_docker
 
+Installation will take around 1-2 hours. Tested on Linux (CentOS 7/8).
+
 ### Create new conda environment
 ```	
 conda create --name alphalink -c conda-forge python=3.10
@@ -123,7 +125,12 @@ After set up, AlphaLink can be run as follows:
     /path/to/database/directory/ \    # directory of databases
     2020-05-01                        # use templates before this date
 ```
-	
+Output folder will contain the relaxed and unrelaxed PDBs and a pickle file with the PAE map.
+
+### Hardware requirements
+GPU, ideally NVIDIA V100 and upwards. A100+ can make use of bfloat16 to predict larger targets.
+
+ 
 ## Citing this work
 
 If you use the code, the model parameters, or the released data of AlphaLink2, please cite
@@ -152,7 +159,7 @@ AlphaLink2 is based on [Uni-Fold](https://github.com/dptech-corp/Uni-Fold) and f
 
 ### Code License
 
-While AlphaFold's and, by extension, Uni-Fold's source code is licensed under the permissive Apache Licence, Version 2.0, DeepMind's pretrained parameters fall under the CC BY 4.0 license. Note that the latter replaces the original, more restrictive CC BY-NC 4.0 license as of January 2022
+While AlphaFold's and, by extension, Uni-Fold's source code is licensed under the permissive Apache License, Version 2.0, DeepMind's pre-trained parameters fall under the CC BY 4.0 license. Note that the latter replaces the original, more restrictive CC BY-NC 4.0 license as of January 2022
 
 ### Model Parameters License
 
