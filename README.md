@@ -99,7 +99,20 @@ cp stereo_chemical_props.txt $CONDA_PREFIX/lib/python3.10/site-packages/`ls $CON
 cd ..
 ```
 
-If you are missing the databases for MSA generation, follow the instructions outlined under [Genetic databases](https://github.com/deepmind/alphafold#installation-and-running-your-first-prediction).
+### Databases
+
+If you are missing the databases for MSA generation, you can download them with the following script:
+
+```
+bash scripts/download/download_all_data.sh /path/to/database/directory full_dbs
+```
+or for the smaller databases:
+
+```
+bash scripts/download/download_all_data.sh /path/to/database/directory reduced_dbs
+```
+
+They require up to 3TB of storage.
 
 ### Install AlphaLink2
 ```
