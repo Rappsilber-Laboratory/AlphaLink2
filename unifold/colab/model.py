@@ -56,6 +56,9 @@ def colab_inference(
     print("start to predict {}".format(target_id))
     plddts = {}
     ptms = {}
+    iptms = {}
+    model_confidences = {}
+
     best_result = None
     best_score = 0
 
@@ -116,11 +119,14 @@ def colab_inference(
         )
 
         cur_save_name = (
-            f"{cur_param_path_postfix}_{cur_seed}"
+            f"AlphaLink2_{cur_seed}"
         )
         plddts[cur_save_name] = str(mean_plddt)
         if is_multimer:
-            ptms[cur_save_name] = str(np.mean(out["iptm+ptm"]))
+            model_confidences[cur_save_name] = str(np.mean(out["iptm+ptm"]))
+            iptms[cur_save_name] = str(np.mean(out["iptm"]))
+            ptms[cur_save_name] = str(np.mean(out["ptm"]))
+
         with open(os.path.join(output_dir, cur_save_name + '.pdb'), "w") as f:
             f.write(protein.to_pdb(cur_protein))
 
@@ -143,14 +149,19 @@ def colab_inference(
                     "pae": None
                 }
 
-    print("plddts", plddts)
-    score_name = f"{model_name}_{cur_param_path_postfix}"
+    # print("plddts", plddts)
+    score_name = "AlphaLink2"
     plddt_fname = score_name + "_plddt.json"
     json.dump(plddts, open(os.path.join(output_dir, plddt_fname), "w"), indent=4)
     if ptms:
-        print("ptms", ptms)
+        print("ipTMs", iptms)
         ptm_fname = score_name + "_ptm.json"
         json.dump(ptms, open(os.path.join(output_dir, ptm_fname), "w"), indent=4)
+        iptm_fname = score_name + "_iptm.json"
+        json.dump(iptms, open(os.path.join(output_dir, iptm_fname), "w"), indent=4)
+
+    model_confidences_fname = score_name + "_model_confidence.json"
+    json.dump(model_confidences, open(os.path.join(output_dir, model_confidences_fname), "w"), indent=4)
 
 
 
