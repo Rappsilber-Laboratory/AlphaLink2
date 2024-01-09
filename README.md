@@ -77,8 +77,9 @@ For other systems, build [Uni-Core from scratch.](https://github.com/dptech-corp
 
 ### Install utilities
 ```
-conda install -y -c conda-forge openmm==7.7.0 pdbfixer
+conda install -y -c conda-forge openmm==7.7.0 pdbfixer biopython==1.81
 conda install -y -c bioconda hmmer hhsuite==3.3.0 kalign2
+
 ```
 
 ### Install AlphaFold - necessary for relax
