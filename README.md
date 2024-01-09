@@ -141,6 +141,19 @@ After set up, AlphaLink can be run as follows:
 ```
 Output folder will contain the relaxed and unrelaxed PDBs and a pickle file with the PAE map.
 
+
+
+## AlphaLink IHM model deposition
+
+Models generated with AlphaLink using experimental restraints can be published as integrative/hybrid models in PDB-Dev [PDB-Dev](https://pdb-dev.wwpdb.org/) using the make_ihm.py script which requires [python-ihm](https://github.com/ihmwg/python-ihm).
+
+The script takes the chain_id_map.json file, the crosslink pickle, a mmcif file generated from the .pdb output of AlphaLink2 and the accession code for the deposited data (e.g., PRIDE) as input.
+
+To generate a mmcif file from the .pdb output of AlphaLink2 you can use [Maxit](https://sw-tools.rcsb.org/apps/MAXIT/index.html).
+
+Finally update the authors in the make_ihm.py script and if applicable add your publication as a citation before running the script. 
+
+
 ### Hardware requirements
 GPU, ideally NVIDIA V100 and upwards. A100+ can make use of bfloat16 to predict larger targets.
 
