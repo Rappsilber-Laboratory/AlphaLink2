@@ -56,6 +56,8 @@ The chain IDs A..Z+ designate all unique chains (based on sequence identity) in 
 ### Installing AlphaLink from scratch with conda/ pip
 In part based on: https://github.com/kalininalab/alphafold_non_docker
 
+Installation will take around 1-2 hours. Tested on Linux (CentOS 7/8).
+
 ### Create new conda environment
 ```	
 conda create --name alphalink -c conda-forge python=3.10
@@ -75,8 +77,9 @@ For other systems, build [Uni-Core from scratch.](https://github.com/dptech-corp
 
 ### Install utilities
 ```
-conda install -y -c conda-forge openmm==7.7.0 pdbfixer
+conda install -y -c conda-forge openmm==7.7.0 pdbfixer biopython==1.81
 conda install -y -c bioconda hmmer hhsuite==3.3.0 kalign2
+
 ```
 
 ### Install AlphaFold - necessary for relax
@@ -97,7 +100,20 @@ cp stereo_chemical_props.txt $CONDA_PREFIX/lib/python3.10/site-packages/`ls $CON
 cd ..
 ```
 
-If you are missing the databases for MSA generation, follow the instructions outlined under [Genetic databases](https://github.com/deepmind/alphafold#installation-and-running-your-first-prediction).
+### Databases
+
+If you are missing the databases for MSA generation, you can download them with the following script:
+
+```
+bash scripts/download/download_all_data.sh /path/to/database/directory full_dbs
+```
+or for the smaller databases:
+
+```
+bash scripts/download/download_all_data.sh /path/to/database/directory reduced_dbs
+```
+
+They require up to 3TB of storage.
 
 ### Install AlphaLink2
 ```
@@ -123,7 +139,12 @@ After set up, AlphaLink can be run as follows:
     /path/to/database/directory/ \    # directory of databases
     2020-05-01                        # use templates before this date
 ```
-	
+Output folder will contain the relaxed and unrelaxed PDBs and a pickle file with the PAE map.
+
+### Hardware requirements
+GPU, ideally NVIDIA V100 and upwards. A100+ can make use of bfloat16 to predict larger targets.
+
+ 
 ## Citing this work
 
 If you use the code, the model parameters, or the released data of AlphaLink2, please cite
@@ -152,7 +173,7 @@ AlphaLink2 is based on [Uni-Fold](https://github.com/dptech-corp/Uni-Fold) and f
 
 ### Code License
 
-While AlphaFold's and, by extension, Uni-Fold's source code is licensed under the permissive Apache Licence, Version 2.0, DeepMind's pretrained parameters fall under the CC BY 4.0 license. Note that the latter replaces the original, more restrictive CC BY-NC 4.0 license as of January 2022
+While AlphaFold's and, by extension, Uni-Fold's source code is licensed under the permissive Apache License, Version 2.0, DeepMind's pre-trained parameters fall under the CC BY 4.0 license. Note that the latter replaces the original, more restrictive CC BY-NC 4.0 license as of January 2022
 
 ### Model Parameters License
 
