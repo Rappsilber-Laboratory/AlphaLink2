@@ -218,7 +218,7 @@ def main(args):
             plddt[..., None], residue_constants.atom_type_num, axis=-1
         )
         cur_protein = protein.from_prediction(
-            features=batch, result=out, b_factors=plddt_b_factors
+            features=batch, result=out, b_factors=plddt_b_factors*100
         )
 
         iptm_str = np.mean(out["iptm+ptm"])
