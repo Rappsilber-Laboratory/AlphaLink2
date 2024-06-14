@@ -49,7 +49,7 @@ Example:
 5 A 5 A 0.1
 ```
 
-The chain IDs A..Z+ designate all unique chains (based on sequence identity) in the FASTA file, enumerated by order of appearance. That is, the first chain gets the identifier A, the second chain the identifier B and so on. In case, for example, the second chain is a copy of the first chain, it will also be assigned chain A. After feature generation, the chain assignment can be found in the output folder in the file "chain_id_map.json" and the final composition (denoting copies) in the file "chains.txt". Changing "chains.txt" is an easy way to test different compositions and doesn't require regenerating the features.
+The chain IDs A..Z+ designate all chains in the FASTA file, enumerated by order of appearance. That is, the first chain gets the identifier A, the second chain the identifier B and so on. After feature generation, the chain assignment can be found in the output folder in the file "chain_id_map.json" and the final composition in the file "chains.txt". Changing "chains.txt" is an easy way to test different compositions and doesn't require regenerating the features.
 
 ## Installation and preparations
 
