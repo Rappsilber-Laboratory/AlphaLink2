@@ -110,8 +110,8 @@ def main(args):
         model.bfloat16()
 
     # data path is based on target_name
-    data_dir = os.path.join(args.data_dir, args.target_name)
-    output_dir = os.path.join(args.output_dir, args.target_name)
+    data_dir = args.data_dir #os.path.join(args.data_dir, args.target_name)
+    output_dir = args.output_dir #os.path.join(args.output_dir, args.target_name)
     os.system("mkdir -p {}".format(output_dir))
     cur_param_path_postfix = os.path.split(args.param_path)[-1]
     name_postfix = ""
