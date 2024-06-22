@@ -329,12 +329,12 @@ if __name__ == "__main__":
     parser.add_argument(
         "--times",
         type=int,
-        default=10,
+        default=100,
     )
     parser.add_argument(
         "--max_recycling_iters",
         type=int,
-        default=3,
+        default=20,
     )
     parser.add_argument(
         "--num_ensembles",
