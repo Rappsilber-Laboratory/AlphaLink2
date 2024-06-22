@@ -22,14 +22,15 @@ def get_chain_id_map(
     chain_order = []
 
     unique = {}
-    mapping = defaultdict(list)
+    mapping = {} #defaultdict(list)
 
     for chain_id, seq, des in zip(protein.PDB_CHAIN_IDS, sequences, descriptions):
         #chain_id = protein.PDB_CHAIN_IDS[unique_seqs.index(seq)]
         if not seq in unique:
             unique[seq] = chain_id
+            mapping[unique[seq]] = []
         else:
-            mapping[unique[seq]].append(chain_id) 
+            mapping[unique[seq]].append(chain_id)
         chain_id_map[chain_id]["descriptions"].append(des)
         chain_order.append(chain_id)
 
