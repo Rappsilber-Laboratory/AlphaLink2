@@ -141,6 +141,21 @@ After set up, AlphaLink can be run as follows:
 ```
 Output folder will contain the relaxed and unrelaxed PDBs and a pickle file with the PAE map.
 
+We expose also 4 optional parameters to set the number of recycling iterations, number of samples, Neff for subsampling MSAs, and the possibility to remove MSA information for crosslinked residues.
+
+```bash
+    bash run_alphalink.sh \
+    /path/to/the/input.fasta \        # target fasta file
+    /path/to/crosslinks.pkl.gz \      # pickled and gzipped dictionary with crosslinks
+    /path/to/the/output/directory/ \  # output directory
+    /path/to/model_parameters.pt \    # model parameters
+    /path/to/database/directory/ \    # directory of databases
+    2020-05-01 \                      # use templates before this date
+    20 \                              # use 20 recycling iterations (default: 20)
+    25 \                              # generate 25 sample (default: 25)
+    30 \                              # downsample MSAs to Neff 30 (default: -1, use full MSA, expects integer >= 1)
+    1                                 # integer > 0 activates this option. Remove MSA information for crosslinked residues (default: -1, use full MSA)
+```
 
 
 ## AlphaLink IHM model deposition
