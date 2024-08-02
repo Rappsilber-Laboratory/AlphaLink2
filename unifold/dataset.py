@@ -238,7 +238,7 @@ def load(
         all_chain_features['msa'] = all_chain_features['msa'][indices]
         all_chain_features["deletion_matrix"] = all_chain_features["deletion_matrix"][indices]
         all_chain_features['msa_mask'] = all_chain_features['msa_mask'][indices]
-        after = all_chain_features['msa'].shape
+        after = all_chain_features['msa'].shape[0]
         print("Downsampling MSAs to Neff %d: size of MSA before %d, now %d" % (neff, before, after))
 
     if dropout_crosslinks > 0:
