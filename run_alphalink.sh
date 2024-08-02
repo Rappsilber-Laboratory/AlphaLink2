@@ -4,6 +4,10 @@ output_dir_base=$3
 param_path=$4
 database_dir=$5
 max_template_date=$6
+recycling_iterations=${7:-20}
+number_of_samples=${8:-25}
+neff=${9:--1}
+dropout_crosslinks=${10:--1}
 
 echo "Starting MSA generation..."
 python unifold/homo_search.py \
@@ -29,8 +33,12 @@ python inference.py \
 	--data_dir=$output_dir_base \
 	--target_name=$target_name \
 	--output_dir=$output_dir_base \
-    --crosslinks=$crosslinks \
+    	--crosslinks=$crosslinks \
 	--bf16 \
 	--use_uniprot \
+        --max_recycling_iters=$recycling_iterations \
+        --times=$number_of_samples \
+        --neff=$neff \
+        --dropout_crosslinks=$dropout_crosslinks \
         --save_raw_output \
 	--relax
