@@ -21,6 +21,11 @@ from unicore.distributed import utils as distributed_utils
 
 import random
 
+from unifold.data.msa_subsampling import (
+    get_eff,
+    subsample_msa_sequentially,
+)
+
 Rotation = Iterable[Iterable]
 Translation = Iterable
 Operation = Union[str, Tuple[Rotation, Translation]]
@@ -189,6 +194,8 @@ def load(
     label_dir: Optional[str] = None,
     symmetry_operations: Optional[List[Operation]] = None,
     is_monomer: bool = False,
+    neff: int = -1,
+    dropout_crosslinks: int = -1,
 ) -> NumpyExample:
 
     all_chain_features = [
@@ -224,6 +231,25 @@ def load(
     all_chain_features["asym_len"] = asym_len
 
     all_chain_features['xl'] = xl
+
+    if neff > 0:
+        before = all_chain_features['msa'].shape[0]
+        indices = subsample_msa_sequentially(all_chain_features['msa'],neff=neff)
+        all_chain_features['msa'] = all_chain_features['msa'][indices]
+        all_chain_features["deletion_matrix"] = all_chain_features["deletion_matrix"][indices]
+        all_chain_features['msa_mask'] = all_chain_features['msa_mask'][indices]
+        after = all_chain_features['msa'].shape
+        print("Downsampling MSAs to Neff %d: size of MSA before %d, now %d" % (neff, before, after))
+
+    if dropout_crosslinks > 0:
+        links = torch.nonzero(torch.from_numpy(xl[:,:,0]))
+        for i,j in links:
+            i = i.item()
+            j = j.item()
+            all_chain_features['msa'][1:,i] = 21
+            all_chain_features["deletion_matrix"][1:,i] = 0
+            all_chain_features['msa'][1:,j] = 21
+            all_chain_features["deletion_matrix"][1:,j] = 0
 
     return all_chain_features, None
 

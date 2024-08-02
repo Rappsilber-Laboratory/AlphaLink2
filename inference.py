@@ -60,7 +60,7 @@ def automatic_chunk_size(seq_len, device, is_bf16):
     return chunk_size, block_size
 
 def load_feature_for_one_target(
-    config, data_folder, crosslinks, seed=0, is_multimer=False, use_uniprot=False
+    config, data_folder, crosslinks, seed=0, is_multimer=False, use_uniprot=False, neff=-1, dropout_crosslinks=-1,
 ):
     if not is_multimer:
         uniprot_msa_dir = None
@@ -83,6 +83,8 @@ def load_feature_for_one_target(
         uniprot_msa_dir=uniprot_msa_dir,
         is_monomer=(not is_multimer),
         crosslinks=crosslinks,
+        neff=neff,
+        dropout_crosslinks=dropout_crosslinks,
     )
     batch = UnifoldDataset.collater([batch])
     return batch
@@ -145,6 +147,8 @@ def main(args):
             cur_seed,
             is_multimer=is_multimer,
             use_uniprot=args.use_uniprot,
+            neff=args.neff,
+            dropout_crosslinks=args.dropout_crosslinks,
         )
 
         seed += 1
@@ -317,6 +321,18 @@ if __name__ == "__main__":
         default="",
     )
     parser.add_argument(
+        "--neff",
+        type=int,
+        default=-1,
+        help="Downsample MSAs to given Neff",
+    )
+    parser.add_argument(
+        "--dropout_crosslinks",
+        type=int,
+        default=-1,
+        help="Remove MSAs at crosslinked positions. True for all positive arguments.",
+    )
+    parser.add_argument(
         "--target_name",
         type=str,
         default="",
@@ -329,7 +345,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--times",
         type=int,
-        default=100,
+        default=25,
     )
     parser.add_argument(
         "--max_recycling_iters",
