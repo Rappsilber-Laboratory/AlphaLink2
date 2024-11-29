@@ -1,6 +1,6 @@
 # AlphaLink2: Modelling protein complexes with crosslinking mass spectrometry and deep learning
 
-Code for the paper ["Modelling protein complexes with crosslinking mass spectrometry and deep learning"](https://www.biorxiv.org/content/10.1101/2023.06.07.544059v2). We extend [AlphaLink](https://github.com/lhatsk/AlphaLink) to protein complexes. AlphaLink2 is based on [Uni-Fold](https://github.com/dptech-corp/Uni-Fold) and integrates crosslinking MS data directly into Uni-Fold. The current [networks](https://doi.org/10.5281/zenodo.8007238) were trained with simulated SDA data (25 Å Cα-Cα).
+Code for the paper ["Modelling protein complexes with crosslinking mass spectrometry and deep learning"](https://www.nature.com/articles/s41467-024-51771-2). We extend [AlphaLink](https://github.com/lhatsk/AlphaLink) to protein complexes. AlphaLink2 is based on [Uni-Fold](https://github.com/dptech-corp/Uni-Fold) and integrates crosslinking MS data directly into Uni-Fold. The current [networks](https://doi.org/10.5281/zenodo.8007238) were trained with simulated SDA data (25 Å Cα-Cα).
 
 ![case](./img/figure_github.png)
 <center>
@@ -179,17 +179,15 @@ If you use the code, the model parameters, or the released data of AlphaLink2, p
 
     
 ```bibtex
-@article {Stahl2023,
-	author = {Kolja Stahl and Oliver Brock and Juri Rappsilber},
-	title = {Modelling protein complexes with crosslinking mass spectrometry and deep learning},
-	elocation-id = {2023.06.07.544059},
-	year = {2023},
-	doi = {10.1101/2023.06.07.544059},
-	publisher = {Cold Spring Harbor Laboratory},
-	abstract = {Scarcity of structural and evolutionary information on protein complexes poses a challenge to deep learning-based structure modelling. We integrated experimental distance restraints obtained by crosslinking mass spectrometry (MS) into AlphaFold-Multimer, by extending AlphaLink to protein complexes. Integrating crosslinking MS data substantially improves modelling performance on challenging targets, by helping to identify interfaces, focusing sampling, and improving model selection. This extends to single crosslinks from whole-cell crosslinking MS, suggesting the possibility of whole-cell structural investigations driven by experimental data.Competing Interest StatementThe authors have declared no competing interest.},
-	URL = {https://www.biorxiv.org/content/early/2023/06/09/2023.06.07.544059},
-	eprint = {https://www.biorxiv.org/content/early/2023/06/09/2023.06.07.544059.full.pdf},
-	journal = {bioRxiv}
+@article{stahl2024modelling,
+  title={Modelling protein complexes with crosslinking mass spectrometry and deep learning},
+  author={Stahl, Kolja and Warneke, Robert and Demann, Lorenz and Bremenkamp, Rica and Hormes, Bj{\"o}rn and Brock, Oliver and St{\"u}lke, J{\"o}rg and Rappsilber, Juri},
+  journal={Nature communications},
+  volume={15},
+  number={1},
+  pages={7866},
+  year={2024},
+  publisher={Nature Publishing Group UK London}
 }
 ```
 
