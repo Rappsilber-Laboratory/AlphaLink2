@@ -102,7 +102,7 @@ def main(args):
     model = AlphaFold(config)
 
     print("start to load params {}".format(args.param_path))
-    state_dict = torch.load(args.param_path)["ema"]["params"]
+    state_dict = torch.load(args.param_path, weights_only=False)["ema"]["params"]
     state_dict = {".".join(k.split(".")[1:]): v for k, v in state_dict.items()}
     model.load_state_dict(state_dict)
     model = model.to(args.model_device)
