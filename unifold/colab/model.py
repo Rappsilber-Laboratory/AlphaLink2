@@ -43,7 +43,7 @@ def colab_inference(
     config.globals.chunk_size = 128
     model = AlphaFold(config)
     print("start to load params {}".format(param_path))
-    state_dict = torch.load(param_path)["ema"]["params"]
+    state_dict = torch.load(param_path, weights_only=False)["ema"]["params"]
     state_dict = {".".join(k.split(".")[1:]): v for k, v in state_dict.items()}
     model.load_state_dict(state_dict)
     model = model.to(device)
