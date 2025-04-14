@@ -51,6 +51,16 @@ Example:
 
 The chain IDs A..Z+ designate all chains in the FASTA file, enumerated by order of appearance. That is, the first chain gets the identifier A, the second chain the identifier B and so on. After feature generation, the chain assignment can be found in the output folder in the file "chain_id_map.json" and the final composition in the file "chains.txt". Changing "chains.txt" is an easy way to test different compositions and doesn't require regenerating the features.
 
+## Parse mzIdentML files
+
+After installing this Python package: https://github.com/Rappsilber-Laboratory/xi-mzidentml-converter you can parse mzIdentML files with:
+
+```
+python parse_mzidentml.py --mzidentml Dataset3_2pcntPPI-FDR.mzid
+```
+
+This will generate two outputs: Dataset3_2pcntPPI-FDR.fasta and Dataset3_2pcntPPI-FDR.txt which contain the respective FASTA sequences and the associated crosslinks. Disclaimer: Since the legacy PDB format only supports single character chain IDs we limit the parsing to first 62 sequences.
+
 ## Installation and preparations
 
 ### Installing AlphaLink from scratch with conda/ pip
