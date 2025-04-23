@@ -184,6 +184,27 @@ def bin_crosslinks(xl,size):
 
     return xl_
 
+def generate_pickle(crosslink_file):
+    links = np.loadtxt(crosslink_file,dtype=str)
+
+    if len(links.shape) == 1:
+        links = np.array([links])
+
+    crosslinks = {}
+
+    for i,chain1,j,chain2,fdr in links:
+        i = int(i)
+        j = int(j)
+        fdr = float(fdr)
+        if not chain1 in crosslinks:
+            crosslinks[chain1] = {}
+        if not chain2 in crosslinks[chain1]:
+            crosslinks[chain1][chain2] = []
+
+        crosslinks[chain1][chain2].append((i-1,j-1,fdr))
+
+    return crosslinks
+
 def load(
     sequence_ids: List[str],
     monomer_feature_dir: str,
@@ -211,7 +232,10 @@ def load(
 
     assembly = np.unique([ s.split('_')[0] for s in sequence_ids])[0]
 
-    tp_ = pickle.load(gzip.open(crosslinks,'rb'))
+    if crosslinks.endswith('.txt') or crosslinks.endswith('.csv'):
+        tp_ = generate_pickle(crosslinks)
+    else:
+        tp_ = pickle.load(gzip.open(crosslinks,'rb'))
 
     tp = prepare_crosslinks(tp_, sequence_ids, offsets, asym_len)
 
