@@ -60,7 +60,7 @@ def automatic_chunk_size(seq_len, device, is_bf16):
     return chunk_size, block_size
 
 def load_feature_for_one_target(
-    config, data_folder, crosslinks, seed=0, is_multimer=False, use_uniprot=False
+    config, data_folder, crosslinks, seed=0, is_multimer=False, use_uniprot=False, neff=-1, dropout_crosslinks=-1,
 ):
     if not is_multimer:
         uniprot_msa_dir = None
@@ -83,6 +83,8 @@ def load_feature_for_one_target(
         uniprot_msa_dir=uniprot_msa_dir,
         is_monomer=(not is_multimer),
         crosslinks=crosslinks,
+        neff=neff,
+        dropout_crosslinks=dropout_crosslinks,
     )
     batch = UnifoldDataset.collater([batch])
     return batch
@@ -100,7 +102,7 @@ def main(args):
     model = AlphaFold(config)
 
     print("start to load params {}".format(args.param_path))
-    state_dict = torch.load(args.param_path)["ema"]["params"]
+    state_dict = torch.load(args.param_path, weights_only=False)["ema"]["params"]
     state_dict = {".".join(k.split(".")[1:]): v for k, v in state_dict.items()}
     model.load_state_dict(state_dict)
     model = model.to(args.model_device)
@@ -110,8 +112,8 @@ def main(args):
         model.bfloat16()
 
     # data path is based on target_name
-    data_dir = os.path.join(args.data_dir, args.target_name)
-    output_dir = os.path.join(args.output_dir, args.target_name)
+    data_dir = args.data_dir #os.path.join(args.data_dir, args.target_name)
+    output_dir = args.output_dir #os.path.join(args.output_dir, args.target_name)
     os.system("mkdir -p {}".format(output_dir))
     cur_param_path_postfix = os.path.split(args.param_path)[-1]
     name_postfix = ""
@@ -145,6 +147,8 @@ def main(args):
             cur_seed,
             is_multimer=is_multimer,
             use_uniprot=args.use_uniprot,
+            neff=args.neff,
+            dropout_crosslinks=args.dropout_crosslinks,
         )
 
         seed += 1
@@ -201,7 +205,7 @@ def main(args):
         
         interface = torch.from_numpy(batch['asym_id'][..., None] != batch['asym_id'][..., None, :])
 
-        satisfied = torch.sum(distances[xl & interface] <= 25) / 2
+        satisfied = torch.sum(distances[xl & interface] <= args.cutoff) / 2
 
         total_xl = torch.sum(xl & interface) / 2
 
@@ -218,7 +222,7 @@ def main(args):
             plddt[..., None], residue_constants.atom_type_num, axis=-1
         )
         cur_protein = protein.from_prediction(
-            features=batch, result=out, b_factors=plddt_b_factors
+            features=batch, result=out, b_factors=plddt_b_factors*100
         )
 
         iptm_str = np.mean(out["iptm+ptm"])
@@ -229,6 +233,12 @@ def main(args):
 
         with open(os.path.join(output_dir, cur_save_name), "w") as f:
             f.write(protein.to_pdb(cur_protein))
+
+
+        if args.save_raw_output:
+            with gzip.open(os.path.join(output_dir, cur_save_name + '_outputs.pkl.gz'), 'wb') as f:
+                pickle.dump(out, f)
+        # del out
 
 
     out = best_out
@@ -250,13 +260,6 @@ def main(args):
     plddts[cur_save_name] = str(mean_plddt)
     if is_multimer:
         ptms[cur_save_name] = str(np.mean(out["iptm+ptm"]))
-
-
-    if args.save_raw_output:
-        with gzip.open(os.path.join(output_dir, cur_save_name + '_outputs.pkl.gz'), 'wb') as f:
-            pickle.dump(out, f)
-    del out
-
 
     if args.relax:
         amber_relaxer = relax.AmberRelaxation(
@@ -318,6 +321,18 @@ if __name__ == "__main__":
         default="",
     )
     parser.add_argument(
+        "--neff",
+        type=int,
+        default=-1,
+        help="Downsample MSAs to given Neff",
+    )
+    parser.add_argument(
+        "--dropout_crosslinks",
+        type=int,
+        default=-1,
+        help="Remove MSAs at crosslinked positions. True for all positive arguments.",
+    )
+    parser.add_argument(
         "--target_name",
         type=str,
         default="",
@@ -330,17 +345,22 @@ if __name__ == "__main__":
     parser.add_argument(
         "--times",
         type=int,
-        default=10,
+        default=25,
     )
     parser.add_argument(
         "--max_recycling_iters",
         type=int,
-        default=3,
+        default=20,
     )
     parser.add_argument(
         "--num_ensembles",
         type=int,
         default=1,
+    )
+    parser.add_argument(
+        "--cutoff",
+        type=float,
+        default=25,
     )
     parser.add_argument("--sample_templates", action="store_true")
     parser.add_argument("--use_uniprot", action="store_true")
