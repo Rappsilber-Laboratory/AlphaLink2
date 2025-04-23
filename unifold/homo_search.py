@@ -160,10 +160,10 @@ def generate_pkl_features(
     """
     logging.info(f"searching homogeneous Sequences & structures for {fasta_name}...")
     timings = {}
-    output_dir = os.path.join(output_dir_base, fasta_name.split("_")[0])
+    output_dir = output_dir_base #os.path.join(output_dir_base, "_".join(fasta_name.split("_")[:-1]))
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    chain_id = fasta_name.split("_")[1] if len(fasta_name.split("_")) > 1 else "A"
+    chain_id = fasta_name.split("_")[-1] if len(fasta_name.split("_")) > 1 else "A"
     msa_output_dir = os.path.join(output_dir, chain_id)
     if not os.path.exists(msa_output_dir):
         os.makedirs(msa_output_dir)
@@ -266,28 +266,31 @@ def main(argv):
     input_fasta_str = open(fasta_path).read()
     input_seqs, input_descs = parsers.parse_fasta(input_fasta_str)
     if len(input_seqs) > 1:
-        temp_names, temp_paths = divide_multi_chains(
+        temp_names, temp_paths, chain_mapping, names_paths = divide_multi_chains(
             fasta_name, FLAGS.output_dir, input_seqs, input_descs
         )
         fasta_names = temp_names
         fasta_paths = temp_paths
     else:
-        output_dir = os.path.join(FLAGS.output_dir, fasta_name)
+        output_dir = FLAGS.output_dir #os.path.join(FLAGS.output_dir, fasta_name)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         chain_order_path = os.path.join(output_dir, "chains.txt")
         with open(chain_order_path, "w") as f:
             f.write("A")
-        fasta_names = [fasta_name]
+        fasta_names = [fasta_name+"_A"]
         fasta_paths = [fasta_path]
+        names_paths = { 'A' : (fasta_name+"_A",fasta_path) }
+        chain_mapping = { 'A' : [] }
 
     # Check for duplicate FASTA file names.
     if len(fasta_names) != len(set(fasta_names)):
         raise ValueError("All FASTA paths must have a unique basename.")
 
     # Predict structure for each of the sequences.
-    for i, fasta_path in enumerate(fasta_paths):
-        fasta_name = fasta_names[i]
+    for chain, homomers in chain_mapping.items():
+        fasta_name, fasta_path = names_paths[chain]
+        #fasta_name = fasta_names[i]
         generate_pkl_features(
             fasta_path=fasta_path,
             fasta_name=fasta_name,
@@ -295,6 +298,12 @@ def main(argv):
             data_pipeline=data_pipeline,
             use_uniprot=FLAGS.use_uniprot,
         )
+        for h in homomers:
+            output_dir = FLAGS.output_dir #os.path.join(FLAGS.output_dir, "_".join(fasta_name.split("_")[:-1]))
+            if os.path.isfile(os.path.join(output_dir, "{}.uniprot.pkl.gz".format(chain))):
+                shutil.copy(os.path.join(output_dir, "{}.uniprot.pkl.gz".format(chain)), os.path.join(output_dir, "{}.uniprot.pkl.gz".format(h)))
+            if os.path.isfile(os.path.join(output_dir, "{}.feature.pkl.gz".format(chain))):
+                shutil.copy(os.path.join(output_dir, "{}.feature.pkl.gz".format(chain)), os.path.join(output_dir, "{}.feature.pkl.gz".format(h)))
 
 
 if __name__ == "__main__":

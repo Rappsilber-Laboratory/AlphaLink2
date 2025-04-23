@@ -2,6 +2,7 @@ from absl import logging
 import json
 import os
 from typing import Mapping, Sequence
+from collections import defaultdict
 
 from unifold.data import protein
 
@@ -14,23 +15,26 @@ def get_chain_id_map(
     Makes a mapping from PDB-format chain ID to sequence and description,
     and parses the order of multi-chains
     """
-    unique_seqs = []
-    for seq in sequences:
-        if seq not in unique_seqs:
-            unique_seqs.append(seq)
-
     chain_id_map = {
         chain_id: {"descriptions": [], "sequence": seq}
-        for chain_id, seq in zip(protein.PDB_CHAIN_IDS, unique_seqs)
+        for chain_id, seq in zip(protein.PDB_CHAIN_IDS, sequences) #unique_seqs)
     }
     chain_order = []
 
-    for seq, des in zip(sequences, descriptions):
-        chain_id = protein.PDB_CHAIN_IDS[unique_seqs.index(seq)]
+    unique = {}
+    mapping = {} #defaultdict(list)
+
+    for chain_id, seq, des in zip(protein.PDB_CHAIN_IDS, sequences, descriptions):
+        #chain_id = protein.PDB_CHAIN_IDS[unique_seqs.index(seq)]
+        if not seq in unique:
+            unique[seq] = chain_id
+            mapping[unique[seq]] = []
+        else:
+            mapping[unique[seq]].append(chain_id)
         chain_id_map[chain_id]["descriptions"].append(des)
         chain_order.append(chain_id)
 
-    return chain_id_map, chain_order
+    return chain_id_map, chain_order, mapping
 
 
 def divide_multi_chains(
@@ -54,9 +58,9 @@ def divide_multi_chains(
             f"Got {len(sequences)} chains."
         )
 
-    chain_id_map, chain_order = get_chain_id_map(sequences, descriptions)
+    chain_id_map, chain_order, mapping = get_chain_id_map(sequences, descriptions)
 
-    output_dir = os.path.join(output_dir_base, fasta_name)
+    output_dir = output_dir_base #os.path.join(output_dir_base, fasta_name)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -74,6 +78,7 @@ def divide_multi_chains(
 
     temp_names = []
     temp_paths = []
+    names_path = {}
     for chain_id in chain_id_map.keys():
         temp_name = fasta_name + "_{}".format(chain_id)
         temp_path = os.path.join(output_dir, temp_name + ".fasta")
@@ -83,4 +88,5 @@ def divide_multi_chains(
             f.write(">" + des + "\n" + seq)
         temp_names.append(temp_name)
         temp_paths.append(temp_path)
-    return temp_names, temp_paths
+        names_path[chain_id] = (temp_name,temp_path)
+    return temp_names, temp_paths, mapping, names_path
