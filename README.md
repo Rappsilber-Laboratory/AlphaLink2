@@ -15,7 +15,7 @@ The AlphaLink2 ColabFold can be found [here](https://colab.research.google.com/g
 
 ## Crosslink input format
 
-AlphaLink takes as input a CSV with a list of crosslinked residue pairs with a false-discovery rate (FDR). That is, for inter-protein crosslinks A->B 1,50 and A->A 5,5 and an FDR=20% and 10% resp., the input would look as follows:
+AlphaLink takes as input a CSV (.csv or .txt) with a list of crosslinked residue pairs with a false-discovery rate (FDR). That is, for inter-protein crosslinks A->B 1,50 and A->A 5,5 and an FDR=20% and 10% resp., the input would look as follows:
 
 The crosslinks CSV has the following format (residues are 1-indexed).
 
