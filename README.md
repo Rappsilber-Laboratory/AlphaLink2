@@ -15,28 +15,7 @@ The AlphaLink2 ColabFold can be found [here](https://colab.research.google.com/g
 
 ## Crosslink input format
 
-AlphaLink takes as input a python dictionary of dictionaries with a list of crosslinked residue pairs with a false-discovery rate (FDR). That is, for inter-protein crosslinks A->B 1,50 and 30,80 and an FDR=20%, the input would look as follows:
-
-```
-In [6]: crosslinks
-Out[6]: {'A': {'B': [(1, 50, 0.2), (30, 80, 0.2)]}}
-```
-
-Intra-protein crosslinks would go from A -> A
-
-```
-In [6]: crosslinks
-Out[6]: {'A': {'A': [(5, 20, 0.2)]}}
-```
-
-The dictionaries are 0-indexed, i.e., residues start from 0.
-
-
-You can create the dictionaries with the generate_crosslink_pickle.py script by running
-
-```
-python generate_crosslink_pickle.py --csv crosslinks.csv --output crosslinks.pkl.gz
-```
+AlphaLink takes as input a CSV with a list of crosslinked residue pairs with a false-discovery rate (FDR). That is, for inter-protein crosslinks A->B 1,50 and A->A 5,5 and an FDR=20% and 10% resp., the input would look as follows:
 
 The crosslinks CSV has the following format (residues are 1-indexed).
 
