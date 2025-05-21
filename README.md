@@ -74,7 +74,7 @@ conda install -y -c bioconda hmmer hhsuite==3.3.0 kalign2
 ### Install AlphaFold - necessary for relax
 
 ```
-pip install tensorflow-cpu==2.16.1
+pip install tensorflow-cpu==2.19.0
 git clone https://github.com/deepmind/alphafold.git
 
 cd alphafold
@@ -84,7 +84,7 @@ python setup.py install
 wget --no-check-certificate https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c4941278d92b554ec94415f8/modules/mol/alg/src/stereo_chemical_props.txt
 
 # copy stereo_chemical_props.txt to the alphafold conda folder
-cp stereo_chemical_props.txt $CONDA_PREFIX/lib/python3.10/site-packages/`ls $CONDA_PREFIX/lib/python3.10/site-packages/ | grep alphafold`/alphafold/common/
+cp stereo_chemical_props.txt $CONDA_PREFIX/lib/python3.10/site-packages/alphafold/common/
 
 cd ..
 ```
